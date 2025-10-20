@@ -39,7 +39,7 @@ A pre-configured preset is included in the `sysex/` folder:
 - **File**: `nektar-pacer-surface.syx`
 - Import this file using the Pacer Editor: **https://studiocode.dev/pacer-editor/#/**
 
-This preset includes all three CC mappings ready to use.
+This preset includes all CC mappings ready to use.
 
 ### Option 2: Manual Configuration
 
@@ -100,6 +100,46 @@ Data 2:    0    (value when OFF)
 Data 3:    127  (value when ON)
 ```
 
+### Footswitch for Navigate Down (CC 22)
+
+```text
+Mode:      CC Momentary
+Channel:   Global
+CC Number: 22
+Data 2:    0    (value when OFF)
+Data 3:    127  (value when ON)
+```
+
+### Footswitch for Navigate Up (CC 23)
+
+```text
+Mode:      CC Momentary
+Channel:   Global
+CC Number: 23
+Data 2:    0    (value when OFF)
+Data 3:    127  (value when ON)
+```
+
+### Footswitch for Navigate Left (CC 24)
+
+```text
+Mode:      CC Momentary
+Channel:   Global
+CC Number: 24
+Data 2:    0    (value when OFF)
+Data 3:    127  (value when ON)
+```
+
+### Footswitch for Navigate Right (CC 25)
+
+```text
+Mode:      CC Momentary
+Channel:   Global
+CC Number: 25
+Data 2:    0    (value when OFF)
+Data 3:    127  (value when ON)
+```
+
 ## Workflow Example
 
 ### Recording and Playing a Loop
@@ -112,13 +152,15 @@ Data 3:    127  (value when ON)
 6. **Press FS with CC 117** → Plays the recorded clip
 7. **Press FS with CC 117 again** → Stops the clip
 
-### Building a Loop Set
+### Building a Loop Set with Navigation
 
 1. Record first clip on Track 1 (CC 20)
 2. Play first clip (CC 117)
-3. Select Track 2
-4. Record second clip while first is playing (CC 20)
-5. Toggle clips on/off as needed (CC 117)
+3. Navigate to Track 2 (CC 25 - Navigate Right)
+4. Navigate to desired scene (CC 22/23 - Navigate Down/Up)
+5. Record second clip while first is playing (CC 20)
+6. Toggle clips on/off as needed (CC 117)
+7. Use CC 24/25 to move between tracks, CC 22/23 to move between scenes
 
 ## Technical Details
 
@@ -137,7 +179,7 @@ Data 3:    127  (value when ON)
 
 ### CC messages not working
 
-- Verify Nektar Pacer is sending the correct CC numbers (20, 21, and 117)
+- Verify Nektar Pacer is sending the correct CC numbers (20, 21, 22, 23, 24, 25, and 117)
 - Check that "Data 3" is set to 127 (not 0) in your Pacer configuration
 - Ensure the MIDI channel matches (Global = Channel 1)
 
@@ -148,7 +190,7 @@ Data 3:    127  (value when ON)
 
 ### Clip doesn't play
 - Ensure there's an actual clip in the selected slot
-- Check the logs for "Pas de clip dans le slot sélectionné" message
+- Check the logs for "No clip in selected slot" message
 
 ## Logs and Debugging
 
