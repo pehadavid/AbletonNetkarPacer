@@ -7,6 +7,7 @@ class NektarPacer(ControlSurface):
 
     CC_RECORD = 20   # CC pour l'enregistrement
     CC_PLAY = 117    # CC pour play/stop
+    CC_UNDO = 21     # CC pour undo
 
     def __init__(self, c_instance):
         super(NektarPacer, self).__init__(c_instance)
@@ -20,6 +21,10 @@ class NektarPacer(ControlSurface):
             # Créer un objet CC pour play/stop (CC 117)
             self._cc_play = SliderElement(MIDI_CC_TYPE, 0, self.CC_PLAY)
             self._cc_play.add_value_listener(self._cc_play_value)
+            
+            # Créer un objet CC pour undo (CC 21)
+            self._cc_undo = SliderElement(MIDI_CC_TYPE, 0, self.CC_UNDO)
+            self._cc_undo.add_value_listener(self._cc_undo_value)
 
     def _cc_record_value(self, value):
         song = self.song()
@@ -49,8 +54,26 @@ class NektarPacer(ControlSurface):
             
             # Arrêter le clip s'il est en cours d'enregistrement
             if selected_slot.has_clip and selected_slot.clip.is_recording:
+                # Stopper l'enregistrement
                 selected_slot.stop()
-            
+
+                # Si le clip existe après l'arrêt, lancer sa lecture automatiquement
+                # selected_slot.has_clip peut déjà être True ; on vérifie et on lance
+                if selected_slot.has_clip:
+                    try:
+                        self.log_message("Lancement automatique du clip sur %s après enregistrement" % selected_track.name)
+                        selected_slot.fire()
+                    except Exception:
+                        # Certains environnements Live peuvent exposer d'autres méthodes
+                        # Si fire() n'est pas disponible, essayer via clip.playing_position / is_playing
+                        try:
+                            clip = selected_slot.clip
+                            if not clip.is_playing:
+                                clip.fire()  # tentative, selon API
+                        except Exception:
+                            # Rien de plus à faire ici; on laisse le clip arrêté
+                            pass
+
             selected_track.arm = False
 
     def _cc_play_value(self, value):
@@ -77,7 +100,17 @@ class NektarPacer(ControlSurface):
             else:
                 self.log_message("Pas de clip dans le slot sélectionné")
 
+    def _cc_undo_value(self, value):
+        # Déclencher undo uniquement sur appui (valeur > 0)
+        if value > 0:
+            self.log_message("Undo déclenché")
+            try:
+                self.song().undo()
+            except Exception as e:
+                self.log_message("Erreur lors de l'undo: %s" % str(e))
+
     def disconnect(self):
         self._cc_record.remove_value_listener(self._cc_record_value)
         self._cc_play.remove_value_listener(self._cc_play_value)
+        self._cc_undo.remove_value_listener(self._cc_undo_value)
         super(NektarPacer, self).disconnect()

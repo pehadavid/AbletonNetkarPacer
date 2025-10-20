@@ -1,46 +1,44 @@
 # Nektar Pacer MIDI Remote Script for Ableton Live
 
-A custom MIDI Remote Script that enables Nektar Pacer foot controllers to control recording and clip playback in Ableton Live.
+MIDI Remote Script to control Ableton Live with Nektar Pacer foot controller.
 
 ## Features
 
-This script provides two main control functions via MIDI CC messages:
+### CC 20 - Recording (Toggle)
+- **First press**: Arms the track and starts recording on the selected clip slot
+- **Second press**: Stops recording and disarms the track
 
-### CC 20 - Track Recording (Toggle Mode)
-Controls track arming and clip recording on the selected track.
+### CC 117 - Clip Play/Stop (Toggle)
+- **Press**: Plays or stops the selected clip
+- Does nothing if no clip is present
 
-**Behavior:**
-- **First press** (CC 20 value > 0):
-  - Arms the selected track
-  - Enables session recording mode
-  - Starts recording on the selected clip slot
-  - Logs: "Record ON piste [track name]"
+### CC 21 - Undo (Momentary)
+- **Press**: Undoes the last action in Ableton Live
 
-- **Second press** (CC 20 value = 0):
-  - Stops the clip if currently recording
-  - Disarms the selected track
-  - Logs: "Record OFF piste [track name]"
+## Nektar Pacer Configuration
 
-**Use case:** Perfect for recording loops in session view. Press once to start recording, press again to stop and finalize the clip.
+To use this script, you need to configure your Nektar Pacer footswitches to send the correct CC messages.
 
-### CC 117 - Clip Play/Stop (Toggle Mode)
-Controls playback of clips in the selected clip slot.
+### Option 1: Import the SysEx file (Recommended)
 
-**Behavior:**
-- **Press** (CC 117 value > 0):
-  - If a clip exists in the selected slot:
-    - **Clip is playing** → Stops the clip (Logs: "Clip STOP sur [track name]")
-    - **Clip is stopped** → Starts the clip (Logs: "Clip PLAY sur [track name]")
-  - If no clip exists in the selected slot:
-    - Logs: "Pas de clip dans le slot sélectionné"
+A pre-configured preset is included in the `sysex/` folder:
+- **File**: `nektar-pacer-surface.syx`
+- Import this file using the Pacer Editor: **https://studiocode.dev/pacer-editor/#/**
 
-**Use case:** Toggle playback of recorded clips. Press to play, press again to stop.
+This preset includes all three CC mappings ready to use.
+
+### Option 2: Manual Configuration
+
+Use the online Pacer Editor to manually configure your footswitches with:
+- **CC 20** for Recording (Toggle mode)
+- **CC 117** for Clip Play/Stop (Toggle mode)
+- **CC 21** for Undo (Momentary mode)
 
 ## Installation
 
-1. Copy the `NektarPacer` folder to your Ableton MIDI Remote Scripts directory:
-   - **Windows:** `C:\ProgramData\Ableton\Live [version]\Resources\MIDI Remote Scripts\`
-   - **macOS:** `/Applications/Live [version]/Contents/App-Resources/MIDI Remote Scripts/`
+1. Copy the entire repository content to a new folder named `NektarPacer` in your Ableton MIDI Remote Scripts directory:
+   - **Windows:** `C:\ProgramData\Ableton\Live [version]\Resources\MIDI Remote Scripts\NektarPacer\`
+   - **macOS:** `/Applications/Live [version]/Contents/App-Resources/MIDI Remote Scripts/NektarPacer/`
 
 2. Restart Ableton Live
 
@@ -55,7 +53,8 @@ Controls playback of clips in the selected clip slot.
 Configure your Nektar Pacer footswitches with the following settings:
 
 ### Footswitch for Recording (CC 20)
-```
+
+```text
 Mode:      CC Toggle
 Channel:   Global
 CC Number: 20
@@ -64,10 +63,21 @@ Data 3:    127  (value when ON)
 ```
 
 ### Footswitch for Clip Play/Stop (CC 117)
-```
+
+```text
 Mode:      CC Toggle
 Channel:   Global
 CC Number: 117
+Data 2:    0    (value when OFF)
+Data 3:    127  (value when ON)
+```
+
+### Footswitch for Undo (CC 21)
+
+```text
+Mode:      CC Momentary
+Channel:   Global
+CC Number: 21
 Data 2:    0    (value when OFF)
 Data 3:    127  (value when ON)
 ```
@@ -108,7 +118,8 @@ Data 3:    127  (value when ON)
 - Ensure `__init__.py` is present in the folder
 
 ### CC messages not working
-- Verify Nektar Pacer is sending the correct CC numbers (20 and 117)
+
+- Verify Nektar Pacer is sending the correct CC numbers (20, 21, and 117)
 - Check that "Data 3" is set to 127 (not 0) in your Pacer configuration
 - Ensure the MIDI channel matches (Global = Channel 1)
 
@@ -124,15 +135,20 @@ Data 3:    127  (value when ON)
 ## Logs and Debugging
 
 The script outputs log messages visible in Ableton's Log.txt file:
+
 - "Nektar Pacer Control loaded" - Script initialized successfully
 - "Record ON piste [name]" - Recording started
 - "Record OFF piste [name]" - Recording stopped
 - "Clip PLAY sur [name]" - Clip playback started
 - "Clip STOP sur [name]" - Clip playback stopped
 - "Pas de clip dans le slot sélectionné" - No clip in selected slot
+- "Undo déclenché" - Undo action triggered successfully
+- "Erreur lors de l'undo: [error]" - Undo action failed
 
 ## Version History
 
+- **v1.1** - Undo feature added
+  - CC 21: Undo command
 - **v1.0** - Initial release
   - CC 20: Track recording toggle
   - CC 117: Clip play/stop toggle
