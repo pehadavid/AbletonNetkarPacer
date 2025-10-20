@@ -47,57 +47,56 @@ class NektarPacer(ControlSurface):
             self._cc_track_right.add_value_listener(self._cc_track_right_value)
 
     def _cc_record_value(self, value):
-        song = self.song()
-        selected_track = song.view.selected_track
-        
-        # Get the selected scene index
-        selected_scene_index = list(song.scenes).index(song.view.selected_scene)
-        selected_slot = selected_track.clip_slots[selected_scene_index]
-
+        # Trigger mode: only react to value > 0 (button press)
         if value > 0:
-            # Activation: arm track and start recording
-            self.log_message("Record ON track %s" % selected_track.name)
+            song = self.song()
+            selected_track = song.view.selected_track
             
-            # Arm the track
-            selected_track.arm = True
+            # Get the selected scene index
+            selected_scene_index = list(song.scenes).index(song.view.selected_scene)
+            selected_slot = selected_track.clip_slots[selected_scene_index]
+
+            # Check current state: is track armed and recording?
+            is_recording = selected_track.arm and selected_slot.has_clip and selected_slot.clip.is_recording
             
-            # Enable session recording if needed
-            if not song.session_record:
-                song.session_record = True
-            
-            # Start recording on the clip slot
-            selected_slot.fire()
-            
-        else:
-            # Deactivation: stop clip and disarm track
-            self.log_message("Record OFF track %s" % selected_track.name)
-            
-            # Stop the clip if it's currently recording
-            if selected_slot.has_clip and selected_slot.clip.is_recording:
-                # Stop recording
+            if is_recording:
+                # Currently recording → stop recording
+                self.log_message("Record OFF track %s" % selected_track.name)
+                
+                # Stop the clip if it's currently recording
                 selected_slot.stop()
 
                 # If clip exists after stopping, launch it automatically
-                # selected_slot.has_clip may already be True; check and launch
                 if selected_slot.has_clip:
                     try:
                         self.log_message("Auto-launching clip on %s after recording" % selected_track.name)
                         selected_slot.fire()
                     except Exception:
                         # Some Live environments may expose other methods
-                        # If fire() is not available, try via clip.playing_position / is_playing
                         try:
                             clip = selected_slot.clip
                             if not clip.is_playing:
-                                clip.fire()  # attempt, depending on API
+                                clip.fire()
                         except Exception:
-                            # Nothing more to do here; leave the clip stopped
                             pass
 
-            selected_track.arm = False
+                selected_track.arm = False
+            else:
+                # Not recording → start recording
+                self.log_message("Record ON track %s" % selected_track.name)
+                
+                # Arm the track
+                selected_track.arm = True
+                
+                # Enable session recording if needed
+                if not song.session_record:
+                    song.session_record = True
+                
+                # Start recording on the clip slot
+                selected_slot.fire()
 
     def _cc_play_value(self, value):
-        # Toggle play/stop of clip only on press (value > 0)
+        # Trigger mode: only react to value > 0 (button press)
         if value > 0:
             song = self.song()
             selected_track = song.view.selected_track
@@ -110,7 +109,7 @@ class NektarPacer(ControlSurface):
             if selected_slot.has_clip:
                 clip = selected_slot.clip
                 
-                # Toggle play/stop of the clip
+                # Check actual clip state and toggle
                 if clip.is_playing:
                     self.log_message("Clip STOP on %s" % selected_track.name)
                     selected_slot.stop()
