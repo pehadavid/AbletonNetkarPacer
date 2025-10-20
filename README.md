@@ -17,6 +17,18 @@ MIDI Remote Script to control Ableton Live with Nektar Pacer foot controller.
 ### CC 21 - Undo (Momentary)
 - **Press**: Undoes the last action in Ableton Live
 
+### CC 22 - Navigate Down (Momentary)
+- **Press**: Moves the scene selection down (next clip slot below on the selected track)
+
+### CC 23 - Navigate Up (Momentary)
+- **Press**: Moves the scene selection up (previous clip slot above on the selected track)
+
+### CC 24 - Navigate Left (Momentary)
+- **Press**: Moves the track selection left (previous track)
+
+### CC 25 - Navigate Right (Momentary)
+- **Press**: Moves the track selection right (next track)
+
 ## Nektar Pacer Configuration
 
 To use this script, you need to configure your Nektar Pacer footswitches to send the correct CC messages.
@@ -35,6 +47,10 @@ Use the online Pacer Editor to manually configure your footswitches with:
 - **CC 20** for Recording (Toggle mode)
 - **CC 117** for Clip Play/Stop (Toggle mode)
 - **CC 21** for Undo (Momentary mode)
+- **CC 22** for Navigate Down (Momentary mode)
+- **CC 23** for Navigate Up (Momentary mode)
+- **CC 24** for Navigate Left (Momentary mode)
+- **CC 25** for Navigate Right (Momentary mode)
 
 ## Installation
 
@@ -146,9 +162,19 @@ The script outputs log messages visible in Ableton's Log.txt file:
 - "Pas de clip dans le slot sélectionné" - No clip in selected slot
 - "Undo déclenché" - Undo action triggered successfully
 - "Erreur lors de l'undo: [error]" - Undo action failed
+- "Clip navigation: UP/DOWN to scene [number]" - Scene selection changed
+- "Clip navigation: Already at top/bottom scene" - Cannot move further
+- "Track navigation: LEFT/RIGHT to [track name]" - Track selection changed
+- "Track navigation: Already at first/last track" - Cannot move further
 
 ## Version History
 
+- **v1.3** - Track navigation added
+  - CC 24: Navigate left (previous track)
+  - CC 25: Navigate right (next track)
+- **v1.2** - Scene navigation added
+  - CC 22: Navigate down (next scene)
+  - CC 23: Navigate up (previous scene)
 - **v1.1** - Undo feature added
   - CC 21: Undo command
 - **v1.0** - Initial release
