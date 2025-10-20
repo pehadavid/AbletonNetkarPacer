@@ -2,6 +2,8 @@
 
 MIDI Remote Script to control Ableton Live with Nektar Pacer foot controller.
 
+**Note**: This script is designed primarily for **Session View** workflow (recording and triggering clips). The Nektar Pacer's built-in **Transport mode (Mackie protocol)** remains available and can be used alongside this script for transport controls.
+
 ## Features
 
 ### CC 20 - Recording (Toggle)
