@@ -155,13 +155,14 @@ Data 3:    127  (value when ON)
 The script outputs log messages visible in Ableton's Log.txt file:
 
 - "Nektar Pacer Control loaded" - Script initialized successfully
-- "Record ON piste [name]" - Recording started
-- "Record OFF piste [name]" - Recording stopped
-- "Clip PLAY sur [name]" - Clip playback started
-- "Clip STOP sur [name]" - Clip playback stopped
-- "Pas de clip dans le slot sélectionné" - No clip in selected slot
-- "Undo déclenché" - Undo action triggered successfully
-- "Erreur lors de l'undo: [error]" - Undo action failed
+- "Record ON track [name]" - Recording started
+- "Record OFF track [name]" - Recording stopped
+- "Auto-launching clip on [name] after recording" - Clip auto-play after recording
+- "Clip PLAY on [name]" - Clip playback started
+- "Clip STOP on [name]" - Clip playback stopped
+- "No clip in selected slot" - No clip in selected slot
+- "Undo triggered" - Undo action triggered successfully
+- "Error during undo: [error]" - Undo action failed
 - "Clip navigation: UP/DOWN to scene [number]" - Scene selection changed
 - "Clip navigation: Already at top/bottom scene" - Cannot move further
 - "Track navigation: LEFT/RIGHT to [track name]" - Track selection changed
