@@ -12,6 +12,7 @@ class NektarPacer(ControlSurface):
     CC_CLIP_UP = 23    # CC for navigating to clip above
     CC_TRACK_LEFT = 24  # CC for navigating to track on the left
     CC_TRACK_RIGHT = 25  # CC for navigating to track on the right
+    CC_STOP_CLIP = 26  # CC for stopping the currently playing clip on selected track
 
     def __init__(self, c_instance):
         super(NektarPacer, self).__init__(c_instance)
@@ -45,6 +46,10 @@ class NektarPacer(ControlSurface):
             # Create CC object for track navigation right (CC 25)
             self._cc_track_right = SliderElement(MIDI_CC_TYPE, 0, self.CC_TRACK_RIGHT)
             self._cc_track_right.add_value_listener(self._cc_track_right_value)
+            
+            # Create CC object for stop clip (CC 26)
+            self._cc_stop_clip = SliderElement(MIDI_CC_TYPE, 0, self.CC_STOP_CLIP)
+            self._cc_stop_clip.add_value_listener(self._cc_stop_clip_value)
 
     def _cc_record_value(self, value):
         # Trigger mode: only react to value > 0 (button press)
@@ -202,6 +207,24 @@ class NektarPacer(ControlSurface):
                     song.view.selected_track = tracks[0]
                     self.log_message("Track navigation: RIGHT to %s" % tracks[0].name)
 
+    def _cc_stop_clip_value(self, value):
+        # Stop any playing clip on the selected track
+        if value > 0:
+            song = self.song()
+            selected_track = song.view.selected_track
+            
+            # Find and stop any playing clip on this track
+            clip_stopped = False
+            for clip_slot in selected_track.clip_slots:
+                if clip_slot.has_clip and clip_slot.clip.is_playing:
+                    clip_slot.stop()
+                    clip_stopped = True
+                    self.log_message("Stopped playing clip on track %s" % selected_track.name)
+                    break
+            
+            if not clip_stopped:
+                self.log_message("No playing clip on track %s" % selected_track.name)
+
     def disconnect(self):
         self._cc_record.remove_value_listener(self._cc_record_value)
         self._cc_play.remove_value_listener(self._cc_play_value)
@@ -210,4 +233,5 @@ class NektarPacer(ControlSurface):
         self._cc_clip_up.remove_value_listener(self._cc_clip_up_value)
         self._cc_track_left.remove_value_listener(self._cc_track_left_value)
         self._cc_track_right.remove_value_listener(self._cc_track_right_value)
+        self._cc_stop_clip.remove_value_listener(self._cc_stop_clip_value)
         super(NektarPacer, self).disconnect()

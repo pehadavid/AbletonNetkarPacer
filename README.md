@@ -29,6 +29,9 @@ MIDI Remote Script to control Ableton Live with Nektar Pacer foot controller.
 ### CC 25 - Navigate Right (Momentary)
 - **Press**: Moves the track selection right (next track)
 
+### CC 26 - Stop Clip (Momentary)
+- **Press**: Stops any playing clip on the currently selected track
+
 ## Nektar Pacer Configuration
 
 To use this script, you need to configure your Nektar Pacer footswitches to send the correct CC messages.
@@ -51,6 +54,7 @@ Use the online Pacer Editor to manually configure your footswitches with:
 - **CC 23** for Navigate Up (Momentary mode)
 - **CC 24** for Navigate Left (Momentary mode)
 - **CC 25** for Navigate Right (Momentary mode)
+- **CC 26** for Stop Clip (Momentary mode)
 
 ## Installation
 
@@ -140,6 +144,16 @@ Data 2:    0    (value when OFF)
 Data 3:    127  (value when ON)
 ```
 
+### Footswitch for Stop Clip (CC 26)
+
+```text
+Mode:      CC Momentary
+Channel:   Global
+CC Number: 26
+Data 2:    0    (value when OFF)
+Data 3:    127  (value when ON)
+```
+
 ## Workflow Example
 
 ### Recording and Playing a Loop
@@ -179,7 +193,7 @@ Data 3:    127  (value when ON)
 
 ### CC messages not working
 
-- Verify Nektar Pacer is sending the correct CC numbers (20, 21, 22, 23, 24, 25, and 117)
+- Verify Nektar Pacer is sending the correct CC numbers (20, 21, 22, 23, 24, 25, 26, and 117)
 - Check that "Data 3" is set to 127 (not 0) in your Pacer configuration
 - Ensure the MIDI channel matches (Global = Channel 1)
 
@@ -209,9 +223,13 @@ The script outputs log messages visible in Ableton's Log.txt file:
 - "Clip navigation: Already at top/bottom scene" - Cannot move further
 - "Track navigation: LEFT/RIGHT to [track name]" - Track selection changed
 - "Track navigation: Already at first/last track" - Cannot move further
+- "Stopped playing clip on track [name]" - Clip stopped successfully
+- "No playing clip on track [name]" - No clip was playing on the track
 
 ## Version History
 
+- **v1.4** - Stop clip feature added
+  - CC 26: Stop any playing clip on selected track
 - **v1.3** - Track navigation added
   - CC 24: Navigate left (previous track)
   - CC 25: Navigate right (next track)
