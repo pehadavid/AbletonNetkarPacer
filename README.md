@@ -8,7 +8,7 @@ MIDI Remote Script to control Ableton Live with Nektar Pacer foot controller.
 
 ### CC 20 - Recording (Toggle)
 - **First press**: Arms the track and starts recording on the selected clip slot
-- **Second press**: Stops recording and disarms the track
+- **Second press**: Stops recording (the track remains armed to avoid conflicts with Ableton's auto-arm feature)
 
 ### CC 117 - Clip Play/Stop (Toggle)
 - **Press**: Plays or stops the selected clip

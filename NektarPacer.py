@@ -85,7 +85,8 @@ class NektarPacer(ControlSurface):
                         except Exception:
                             pass
 
-                selected_track.arm = False
+                # Ne pas désarmer la piste pour éviter les conflits avec l'auto-arm
+                # selected_track.arm = False
             else:
                 # Not recording → start recording
                 self.log_message("Record ON track %s" % selected_track.name)
